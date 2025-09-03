@@ -20,18 +20,16 @@ jobs:
     - name: 🚚 Get latest code
       uses: actions/checkout@v4
 
-    # Step 2: Sync files to the hosting server using a new, more robust SFTP action
+    # Step 2: Sync files to the hosting server using a dedicated SFTP action
     - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      uses: easingthemes/sftp-deploy@v4.0.1
       with:
         # These are the secrets you created in your GitHub repository settings
-        server: ${{ secrets.SFTP_SERVER }}
-        username: ${{ secrets.SFTP_USERNAME }}
-        password: ${{ secrets.SFTP_PASSWORD }}
-        port: ${{ secrets.SFTP_PORT }}
+        sftp_host: ${{ secrets.SFTP_SERVER }}
+        sftp_port: ${{ secrets.SFTP_PORT }}
+        sftp_username: ${{ secrets.SFTP_USERNAME }}
+        sftp_password: ${{ secrets.SFTP_PASSWORD }}
         
-        # This line forces the action to use the SFTP protocol immediately.
-        protocol: sftp
-
-        # This is the destination path on your remote server
-        server-dir: domains/skylinecommerce.in/test/
+        # This is the destination path on your remote server.
+        # The './' is important for this action.
+        remote_path: ./domains/skylinecommerce.in/test/
