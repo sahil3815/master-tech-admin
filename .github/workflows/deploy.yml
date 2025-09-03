@@ -1,0 +1,44 @@
+# This is a GitHub Actions workflow file.
+# It defines a set of automated steps that will run when you push code.
+# In this case, it deploys your website files to a server via SFTP.
+
+name: 🚀 Deploy Website via SFTP
+
+# This workflow runs on any push to the 'main' branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    # The type of machine to run the job on
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Check out your repository code so the workflow can access it
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
+
+    # Step 2: Sync files to the hosting server using SFTP
+    - name: 📂 Sync files
+      uses: laryvea/sftp-action@v1
+      with:
+        # These are the secrets you will create in your GitHub repository settings
+        # The names here (e.g., SFTP_SERVER) MUST EXACTLY MATCH the names you create in GitHub.
+        host: ${{ secrets.SFTP_SERVER }}
+        port: ${{ secrets.SFTP_PORT }}
+        username: ${{ secrets.SFTP_USERNAME }}
+        password: ${{ secrets.SFTP_PASSWORD }}
+        
+        # This is the path on your local machine (in the GitHub runner)
+        # '.' means the root of your repository
+        local_path: './'
+
+        # This is the destination path on your remote server
+        # For many shared hosts, this should be '/public_html/' or '/www/'
+        remote_path: '/public_html/'
+
+        # Optional: You can exclude files or directories
+        # exclude: "**/node_modules/**, **/.git/**"
+
