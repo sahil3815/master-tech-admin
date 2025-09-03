@@ -1,8 +1,8 @@
 # This is a GitHub Actions workflow file.
 # It defines a set of automated steps that will run when you push code.
-# In this case, it deploys your website files to a server via SFTP.
+# This version uses rsync over SSH for a more robust and professional deployment.
 
-name: 🚀 Deploy Website via SFTP
+name: 🚀 Deploy Website via Rsync/SSH
 
 # This workflow runs on any push to the 'main' branch
 on:
@@ -20,16 +20,20 @@ jobs:
     - name: 🚚 Get latest code
       uses: actions/checkout@v4
 
-    # Step 2: Sync files to the hosting server using a dedicated SFTP action
-    - name: 📂 Sync files
-      uses: easingthemes/sftp-deploy@v4.0.1
+    # Step 2: Install the SSH private key from your repository secrets
+    - name: 🔑 Install SSH Key
+      uses: shimataro/ssh-key-action@v2
       with:
-        # These are the secrets you created in your GitHub repository settings
-        sftp_host: ${{ secrets.SFTP_SERVER }}
-        sftp_port: ${{ secrets.SFTP_PORT }}
-        sftp_username: ${{ secrets.SFTP_USERNAME }}
-        sftp_password: ${{ secrets.SFTP_PASSWORD }}
-        
-        # This is the destination path on your remote server.
-        # The './' is important for this action.
-        remote_path: ./domains/skylinecommerce.in/test/
+        # This is the private key you will add to your repository secrets
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        # The known_hosts is required by the action, but we will disable strict checking
+        known_hosts: 'placeholder'
+
+    # Step 3: Deploy files to the server using rsync for a fast and clean sync
+    - name: 📂 Sync files via Rsync
+      run: |
+        rsync -avz --delete \
+          -e "ssh -p ${{ secrets.SFTP_PORT }} -o StrictHostKeyChecking=no" \
+          ./ ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_SERVER }}:~/domains/skylinecommerce.in/test/
+        # The --delete flag ensures that files removed from your repo are also removed from the server.
+
