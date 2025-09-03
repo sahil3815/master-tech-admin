@@ -20,25 +20,16 @@ jobs:
     - name: 🚚 Get latest code
       uses: actions/checkout@v4
 
-    # Step 2: Sync files to the hosting server using SFTP
+    # Step 2: Sync files to the hosting server using a new, more robust SFTP action
     - name: 📂 Sync files
-      uses: laryvea/sftp-action@v1
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        # These are the secrets you will create in your GitHub repository settings
-        # The names here (e.g., SFTP_SERVER) MUST EXACTLY MATCH the names you create in GitHub.
-        host: ${{ secrets.SFTP_SERVER }}
-        port: ${{ secrets.SFTP_PORT }}
+        # These are the secrets you created in your GitHub repository settings
+        server: ${{ secrets.SFTP_SERVER }}
         username: ${{ secrets.SFTP_USERNAME }}
         password: ${{ secrets.SFTP_PASSWORD }}
+        port: ${{ secrets.SFTP_PORT }}
         
-        # This is the path on your local machine (in the GitHub runner)
-        # '.' means the root of your repository
-        local_path: './'
-
         # This is the destination path on your remote server
-        # For many shared hosts, this should be '/public_html/' or '/www/'
-        remote_path: '/public_html/'
-
-        # Optional: You can exclude files or directories
-        # exclude: "**/node_modules/**, **/.git/**"
-
+        # I've updated this to point to your test directory.
+        server-dir: domains/skylinecommerce.in/public_html/test
