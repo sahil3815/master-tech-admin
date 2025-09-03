@@ -1,0 +1,26 @@
+# Enable URL rewriting
+RewriteEngine On
+
+# Force HTTPS redirection (if necessary)
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Remove trailing slashes and redirect to the same URL without the slash
+RewriteCond %{REQUEST_URI} /$
+RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+# Redirect "/admin" (with or without a slash) to "/admin/dashboard"
+RewriteRule ^admin/?$ /admin/dashboard [L,R=301]
+
+# Prevent redirects on actual files or directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Ensure URLs work without trailing slashes (rewrite URLs to .php)
+RewriteRule ^(.*)/?$ $1.php [L,QSA]
+
+# Serve 'main.php' when accessing the root URL (without any path)
+RewriteRule ^$ main.php [L,QSA]
+
+# If the URL is '/admin/dashboard' or '/admin/dashboard.php', rewrite it to 'dashboard.php'
+RewriteRule ^admin/dashboard/?$ admin/dashboard.php [L,QSA]
