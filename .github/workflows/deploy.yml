@@ -32,4 +32,4 @@ jobs:
         
         # This is the destination path on your remote server
         # I've updated this to point to your test directory.
-        server-dir: domains/skylinecommerce.in/public_html/test
+        server-dir: domains/skylinecommerce.in/public_html/test/
