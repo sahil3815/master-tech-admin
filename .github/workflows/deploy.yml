@@ -30,6 +30,8 @@ jobs:
         password: ${{ secrets.SFTP_PASSWORD }}
         port: ${{ secrets.SFTP_PORT }}
         
+        # This line forces the action to use the SFTP protocol immediately.
+        protocol: sftp
+
         # This is the destination path on your remote server
-        # I've updated this to point to your test directory.
-        server-dir: domains/skylinecommerce.in/public_html/test/
+        server-dir: domains/skylinecommerce.in/test/
